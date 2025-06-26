@@ -1,5 +1,4 @@
-const { Ship, Gameboard, Cell } = require("./class");
-
+import { Ship, Gameboard, Cell } from "./class"
 
 test("isHit",()=>{
     s = new Ship(5,0,false);
@@ -30,16 +29,10 @@ test("isInBounds",()=>{
     });
 })
 
-// test("isValidShape",()=>{
-//     var arr = [[0,1],[0,2],[0,3]];
-//     var r=0;
-//     var c=0;
-//     arr.forEach(element=>{
-//         r+=element[0];
-//     })
-//     arr.forEach(element=>{
-//         r+=element[1]
-//     })
-    
-    
-// })
+test("checkWin",()=>{
+    gb = new  Gameboard;
+    gb.placeShip(s =new Ship(3,0,true),[[0,0],[0,1],[0,2]]);
+    expect(gb.checkWin()).toBeTruthy();
+    gb.placeShip(s =new Ship(3,0,false),[[0,0],[0,1],[0,2]]);
+    expect(gb.checkWin()).toBeFalsy();
+})

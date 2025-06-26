@@ -1,0 +1,59 @@
+html,body{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    border: 0;
+}
+#wrapper{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 10fr;
+    background-color: #1E8EFB;
+}
+#title{
+    padding-top: 30px;
+    text-align: center;
+    font-size: 30px;
+    grid-area: 1/1/2/3;
+    color: white;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+#player-wrapper,#computer-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -100px;
+}
+
+
+.board{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+.box{
+    width: 30px;
+    height: 30px;
+    border:1px solid black;
+}
+#computer-wrapper .box:hover{
+    background-color: gray;
+}
+.row{
+    display: flex;
+}
+
+.ship{
+    background-color:  #1E8EFB;
+}
+.mark{
+    background-image: image("./x.jpeg");
+}
