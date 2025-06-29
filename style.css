@@ -54,6 +54,12 @@ html,body{
 .ship{
     background-color:  #1E8EFB;
 }
+
 .mark{
-    background-image: image("./x.jpeg");
+    width: 30px;
+    height: 30px;
+    background-image: url("x.jpeg");
+    background-size: 100% 100%;
+
+    
 }

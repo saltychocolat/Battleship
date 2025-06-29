@@ -1,0 +1,22 @@
+gameloop
+
+
+
+creaza bordu
+initPlayer
+	length curent
+	toggle vertical orizontal
+	eventlistener de mouseenter mouseleave si mouseclick
+	mouseenter verifica toggleul si lengthul trecee prin iteme si coloreaza la dreapta sau in jos
+	mouseleave verifica toggleul ----
+	mouseclick
+		validPosition(cords)
+		initPlayer length curent-1
+		remove eventlistener functie recursiva
+initComputer
+	random vertical orizontal
+	caseuri verticale orizontale pentru fiecare 5 4 3 2 
+verifica win
+	turn handalingu switch player computer cu eventhandler pe tot documentu verifica daca bordul este al jucatorului curent (inamic)
+	ataca-recieveAttack 
+	renderAllBoards
