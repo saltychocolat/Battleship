@@ -40,8 +40,8 @@ html,body{
     border-radius: 10px;
 }
 .box{
-    width: 30px;
-    height: 30px;
+    width: 45px;
+    height: 45px;
     border:1px solid black;
 }
 #computer-wrapper .box:hover{
@@ -62,4 +62,8 @@ html,body{
     background-size: 100% 100%;
 
     
+}
+
+.hovered{
+    background-color: lightblue;
 }

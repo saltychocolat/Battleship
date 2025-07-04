@@ -20,3 +20,10 @@ verifica win
 	turn handalingu switch player computer cu eventhandler pe tot documentu verifica daca bordul este al jucatorului curent (inamic)
 	ataca-recieveAttack 
 	renderAllBoards
+
+_______________________________________
+
+
+
+
+
