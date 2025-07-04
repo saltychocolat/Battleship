@@ -11,22 +11,30 @@ html,body{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 10fr;
-    background-color: #1E8EFB;
+
 }
-#title{
-    padding-top: 30px;
+#gameTitle{
+    font-weight: bolder;
+    padding-top: 50px;
     text-align: center;
-    font-size: 30px;
+    font-size: 60px;
     grid-area: 1/1/2/3;
-    color: white;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+#playerTitle{
+    font-family: 'Inter', sans-serif;
+    font-size: 64px;
+    font-weight: 600;
+    text-align: center;
+}
 #player-wrapper,#computer-wrapper{
+    display: flex;
+    flex-direction: column;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: -100px;
+    margin-top: -300px;
 }
 
 
@@ -40,30 +48,30 @@ html,body{
     border-radius: 10px;
 }
 .box{
-    width: 45px;
-    height: 45px;
-    border:1px solid black;
+    width: 65px;
+    height: 65px;
+    border: 1px solid #000;
+    border-radius: 4px;  /* or 8px */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 #computer-wrapper .box:hover{
     background-color: gray;
+    cursor: pointer;
 }
 .row{
     display: flex;
 }
 
 .ship{
-    background-color:  #1E8EFB;
+    background-color:  #00b818ee;
 }
 
 .mark{
-    width: 30px;
-    height: 30px;
-    background-image: url("x.jpeg");
-    background-size: 100% 100%;
+    background-color: gray;
 
     
 }
 
 .hovered{
-    background-color: lightblue;
+    background-color: rgb(182, 230, 173);
 }

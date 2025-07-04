@@ -78,14 +78,14 @@ class Controller{
         this.UIBoardManager = new UIBoardManager(player,computer);
     }
 
-    init(){
+    async init(){
         localStorage.setItem("direction","orizontal")
         this.UIBoardManager.createBoard();
         this.pB = document.querySelector("#player-wrapper .board")
         this.cB = document.querySelector("#computer-wrapper .board")
 
         document.addEventListener("keydown",(event)=>this.CoordinateManager.rotateHandler(event))
-        this.initPlayer();
+        await this.initPlayer();
         document.removeEventListener("keydown",(event)=>this.CoordinateManager.rotateHandler(event));
 
         this.initComputer();
@@ -93,10 +93,14 @@ class Controller{
     }
 
     checkWinner(){
-        if(this.player.gb.checkWin())
+        if(this.player.gb.checkWin()){
+            alert("Player has won!")
             return this.player;
-        else if(this.computer.gb.checkWin())
+        }
+        else if(this.computer.gb.checkWin()){
+            alert("Computer has won!")
             return this.computer;
+        }
         else 
             return false;
     }
@@ -119,7 +123,11 @@ class Controller{
     }
 
     initComputer(){
-        initShipRandom(5);
+        this.initShipRandom(5);
+        this.initShipRandom(4);
+        this.initShipRandom(3);
+        this.initShipRandom(3);
+        this.initShipRandom(2);
 
     }
 
@@ -164,6 +172,20 @@ class Controller{
     }
     initShipRandom(size){
         var bool = Math.random() < 0.5;
+        var cords =  this.CoordinateManager.generateCords();
+
+        var direction = bool == true ? "vertical" : "orizontal"
+        var arr = this.CoordinateManager.cordsToArr(cords,direction,size)
+
+        while(!this.CoordinateManager.validArr(this.computer,arr)){
+            cords =  this.CoordinateManager.generateCords();
+            while(!this.CoordinateManager.validCords(this.computer,cords)){
+                cords = this.CoordinateManager.generateCords();
+            }
+            var arr = this.CoordinateManager.cordsToArr(cords,direction,size)
+        }
+        var s = new Ship(size,0,false);
+        this.computer.gb.placeShip(s,arr);
         
     }
     playTurn(player){
@@ -176,7 +198,7 @@ class Controller{
             if(target==this.computer){
                 board.addEventListener("click",async(event)=>{
                     var cords = this.CoordinateManager.clickToCords(event);
-                    if(this.CoordinateManager.validCords(target,cords)){
+                    if(this.CoordinateManager.validCords(target,cords,"hit")){
                         if(this.hitTarget(target,cords)){
                             this.UIBoardManager.renderAllBoards();
                             if(!this.checkWinner())
@@ -189,7 +211,7 @@ class Controller{
             }   
             else{
                 var cords = this.CoordinateManager.generateCords();
-                while(!this.CoordinateManager.validCords(target,cords))
+                while(!this.CoordinateManager.validCords(target,cords,"hit"))
                     cords = this.CoordinateManager.generateCords();
                 if(this.hitTarget(target,cords)){
                     this.UIBoardManager.renderAllBoards();
@@ -206,8 +228,9 @@ class Controller{
             var current = current==this.player?this.computer:this.player;
             await this.playTurn(current);
             this.UIBoardManager.renderAllBoards();
+            console.log(current)
         }
-        console.log(current)
+
     }
 }
 
@@ -254,9 +277,12 @@ class CoordinateManager{
         var j = Array.from(target.parentElement.children).indexOf(target);
         return [i,j];
     }
-    validCords(player,cords){
+    validCords(player,cords,type="normal"){
         if(player.gb.matrix[cords[0]][cords[1]].old == true || player.gb.matrix[cords[0]][cords[1]].ship != null)
-            return false
+            if(type=="normal")
+                return false
+        if(player.gb.matrix[cords[0]][cords[1]].old == true)
+            return false;
         return true
     }
 

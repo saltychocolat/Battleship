@@ -7,6 +7,7 @@ const player  = new Player(true);
 const computer = new Player(false);
 const controller = new Controller(player,computer);
 
-controller.init();
+await controller.init();
+console.log("A")
 controller.playGame();
 
