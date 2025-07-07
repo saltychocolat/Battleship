@@ -85,7 +85,10 @@ class Controller{
         this.cB = document.querySelector("#computer-wrapper .board")
 
         document.addEventListener("keydown",(event)=>this.CoordinateManager.rotateHandler(event))
+        var messageDiv = document.querySelector(".messageDiv");
+        this.UIBoardManager.showMessage("Press R to rotate!");
         await this.initPlayer();
+        this.UIBoardManager.showMessage("");
         document.removeEventListener("keydown",(event)=>this.CoordinateManager.rotateHandler(event));
 
         this.initComputer();
@@ -94,12 +97,12 @@ class Controller{
 
     checkWinner(){
         if(this.player.gb.checkWin()){
-            alert("Player has won!")
-            return this.player;
-        }
-        else if(this.computer.gb.checkWin()){
             alert("Computer has won!")
             return this.computer;
+        }
+        else if(this.computer.gb.checkWin()){
+            alert("Player has won!")
+            return this.player;
         }
         else 
             return false;
@@ -155,7 +158,7 @@ class Controller{
                 var validArr = this.CoordinateManager.validArr(this.player,arr);
                 if (!validArr) return;
     
-                isPlacing = true
+                isPlacing = true    
                 var placed = await this.UIBoardManager.showHoverAndWaitForClick(board, cords,localStorage.getItem("direction"), size,this.player);
                 isPlacing = false
     
@@ -200,25 +203,32 @@ class Controller{
                     var cords = this.CoordinateManager.clickToCords(event);
                     if(this.CoordinateManager.validCords(target,cords,"hit")){
                         if(this.hitTarget(target,cords)){
+
+                            this.UIBoardManager.showMessage(this.CoordinateManager.cordsToLetter(cords) +" is a hit!✅")
                             this.UIBoardManager.renderAllBoards();
                             if(!this.checkWinner())
                                 await this.playTurn(player);
                         }
+                        this.UIBoardManager.showMessage(this.CoordinateManager.cordsToLetter(cords) +" is a miss!❌")
                         resolve();
                         board.replaceWith(board.cloneNode(true))
                     }
                 })
             }   
             else{
-                var cords = this.CoordinateManager.generateCords();
-                while(!this.CoordinateManager.validCords(target,cords,"hit"))
-                    cords = this.CoordinateManager.generateCords();
-                if(this.hitTarget(target,cords)){
-                    this.UIBoardManager.renderAllBoards();
-                    this.playTurn(player);
-                }
-                resolve();
-                board.replaceWith(board.cloneNode(true));
+                setTimeout(()=>{
+                    var cords = this.CoordinateManager.generateCords();
+                    while(!this.CoordinateManager.validCords(target,cords,"hit"))
+                        cords = this.CoordinateManager.generateCords();
+                    if(this.hitTarget(target,cords)){
+                        this.UIBoardManager.showMessage(this.CoordinateManager.cordsToLetter(cords) +" is a hit!✅")
+                        this.UIBoardManager.renderAllBoards();
+                        this.playTurn(player);
+                    }
+                    this.UIBoardManager.showMessage(this.CoordinateManager.cordsToLetter(cords) +" is a miss!❌")
+                    resolve();
+                    board.replaceWith(board.cloneNode(true));
+                },900)
             }
         })
     }
@@ -226,9 +236,10 @@ class Controller{
     async playGame(){
         while(!this.checkWinner()){
             var current = current==this.player?this.computer:this.player;
+            this.UIBoardManager.showTurn(current);
             await this.playTurn(current);
             this.UIBoardManager.renderAllBoards();
-            console.log(current)
+        
         }
 
     }
@@ -238,6 +249,23 @@ class CoordinateManager{
     constructor(player,computer){
         this.player = player;
         this.computer = computer;
+    }
+    cordsToLetter(cords){
+        var letters = {
+            1: "A",
+            2: "B",
+            3: "C",
+            4: "D",
+            5: "E",
+            6: "F",
+            7: "G",
+            8: "H",
+            9: "I",
+            10: "J"
+        };
+        let row = cords[0]+1;
+        let column = letters[cords[1]+1]
+        return row+column
     }
     rotateHandler(event){
         if(event.key == "r"){
@@ -298,6 +326,17 @@ class UIBoardManager{
         this.computer = computer;
         this.CoordinateManager = new CoordinateManager();
     }
+    showMessage(message){
+        var messageDiv = document.querySelector(".messageDiv");
+        messageDiv.textContent = message;
+    }
+    showTurn(current){
+        var name = current == this.player ? "Player" : "Computer"
+        var div = document.querySelector(".turnDiv")
+        div.textContent = "It's " + name + "s turn!"
+        document.querySelector("#wrapper").appendChild(div);
+
+    }
     showHoverAndWaitForClick(board, cords,direction, size,player) {
         if(direction == "orizontal"){
             return new Promise((resolve) => {
@@ -310,19 +349,23 @@ class UIBoardManager{
                 }
 
                 const placeShip = ()=>{
+                    
                     var arr = this.CoordinateManager.cordsToArr(cords,direction,size);
                     var s = new Ship(size,0,false);
                     player.gb.placeShip(s,arr);
                 }
 
                 const cleanup = () => {
+                    var box = row.childNodes[cords[1]]
                     cells.forEach(c => c.classList.remove("hovered"));
-                    row.removeEventListener("click", onClick);
-                    row.removeEventListener("mouseleave", onLeave);
+                    box.removeEventListener("click", onClick);
+                    box.removeEventListener("mouseleave", onLeave);
                 };
 
                 const onClick = () => {
-                    placeShip();
+                    if(localStorage.getItem("direction") ==direction){
+                        placeShip();
+                    }
                     cleanup();
                     resolve(true); // Ship placed
                 };
@@ -339,6 +382,7 @@ class UIBoardManager{
         }
         if(direction=="vertical"){
             return new Promise((resolve) => {
+                var row =  board.childNodes[cords[0]]
                 const cells = [];
                 for (let i = cords[0]; i < cords[0] + size; i++) {
                     const cell = board.childNodes[i].childNodes[cords[1]]
@@ -353,20 +397,21 @@ class UIBoardManager{
                 }
 
                 const cleanup = () => {
+                    var box = row.childNodes[cords[1]]
                     cells.forEach(c => c.classList.remove("hovered"));
-                    board.removeEventListener("click", onClick);
-                    board.removeEventListener("mouseleave", onLeave);
+                    box.removeEventListener("click", onClick);
+                    box.removeEventListener("mouseleave", onLeave);
                 };
 
                 const onClick = () => {
                     placeShip();
                     cleanup();
-                    resolve(true); // Ship placed
+                    resolve(true); 
                 };
 
                 const onLeave = () => {
                     cleanup();
-                    resolve(false); // User moved away
+                    resolve(false); 
                 };
                 
                 var box = board.childNodes[cords[0]].childNodes[cords[1]]

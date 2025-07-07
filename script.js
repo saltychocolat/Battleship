@@ -8,6 +8,5 @@ const computer = new Player(false);
 const controller = new Controller(player,computer);
 
 await controller.init();
-console.log("A")
 controller.playGame();
 
